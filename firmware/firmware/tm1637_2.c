@@ -236,7 +236,7 @@ void uart_init(int baud_rate){
 	UBRR0L = (value);
 	
 	UCSR0C = 0x06;       /* Set frame format: 8data, 1stop bit  */
-	UCSR0B = (1<<TXEN0) | (1<<RXCIE0) | (1<<RXEN0); /* Enable  transmitter                 */
+	UCSR0B = (1<<TXEN0); /* Enable  transmitter                 */
 }
 
 void serial_write(unsigned char data[]){

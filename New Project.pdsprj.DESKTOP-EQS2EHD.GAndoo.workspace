@@ -97,11 +97,11 @@
    </POPUP>
    <POPUP w="450" x="159" flags="00008063" y="139" h="250" pid="0" iid="20">
     <PROPERTIES>
-     <ITEM name="AutoEcho">0</ITEM>
+     <ITEM name="AutoEcho">1</ITEM>
      <ITEM name="HexMode">0</ITEM>
     </PROPERTIES>
    </POPUP>
-   <POPUP w="695" x="1117" flags="00000001" y="571" h="459" pid="0" iid="22">
+   <POPUP w="695" x="243" flags="00000001" y="621" h="459" pid="0" iid="22">
     <PROPERTIES/>
    </POPUP>
   </PWI>

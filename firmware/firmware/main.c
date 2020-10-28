@@ -10,6 +10,17 @@
 //Including the library to work with the 7-segments display/
 #include "tm1637.h"
 
+/*BT COMMANDS:
+
+1 - timer1
+2 - timer2
+3 - timer3
+
+S - stop
+C - continue
+
+*/
+
 
 //defining a structure TIME...
 struct time
@@ -51,7 +62,7 @@ uint16_t ms_count = 0;
 uint16_t secs_count = 0;
 
 
-
+volatile char bt_read  = 0;
 int status = 0;
 char timer_done = 0;  //Has the timer completed?
 char running = 0;     //is any timer running?
@@ -80,7 +91,7 @@ int main(void)
 	//initiating ADC for A6 (PIR module)
 	InitADC();
 	
-	DDRD = 0b00011010;
+	DDRD = 0b00011110;
 	PORTD |= 0b11000000;
 	DDRB = 0b00110000;
 	PORTB |= 0b00000000;
@@ -116,8 +127,15 @@ int main(void)
 	if(running == 0 && waiting == 0){
 	status = read_buttons();
 	
+	if(bt_read != 0){
+		
+		if (bt_read == '1' || bt_read == '2' || bt_read == '3'){
+			status = bt_read-'0';
+		}
 	
-	if (status != 0){
+		
+	}
+	if (status != 0 ){
 		////serial_write("Button pressed: ");
 		//serial_writeln(status);
 		
@@ -607,4 +625,36 @@ uint16_t ReadADC(uint8_t ADCchannel)
 	// wait until ADC conversion is complete
 	while( ADCSRA & (1<<ADSC) );
 	return ADC;
+}
+
+
+ISR (USART_RX_vect){
+	
+	char ReceivedChar = UDR0;
+	
+	if (ReceivedChar == '1' || ReceivedChar == '2' || ReceivedChar == '3'){
+		PORTD ^= (0x04);
+		
+		if (! running && ! waiting){
+		bt_read = ReceivedChar;
+		}
+	}
+	
+	if (ReceivedChar == 'S' || ReceivedChar == 's'){
+		
+		if(running ){
+		pause_everything();
+		}
+		
+		
+	}
+	if (ReceivedChar == 'C' || ReceivedChar == 'c'){
+		
+		if(running ){
+			resume_everything();
+			set_output(1);
+		}
+		
+		
+	}
 }
